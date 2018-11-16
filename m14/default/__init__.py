@@ -5,14 +5,13 @@ from __future__ import unicode_literals
 
 __version__ = '0.0.2'
 
-import os
-
-from joker.default import under_home_dir
+import os.path
 
 _rootdir = None
 
 
 def _get_rootdir():
+    from joker.default import under_home_dir
     global _rootdir
     if _rootdir is None:
         path = under_home_dir('.m14', 'relocate.txt')
