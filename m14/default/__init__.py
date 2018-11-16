@@ -3,6 +3,8 @@
 
 from __future__ import unicode_literals
 
+__version__ = '0.0.2'
+
 import os
 
 from joker.default import under_home_dir
