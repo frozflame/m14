@@ -3,28 +3,27 @@
 
 from __future__ import unicode_literals
 
-__version__ = '0.0.2'
-
 import os.path
 
-_rootdir = None
+import yaml
+
+__version__ = '0.0.3'
 
 
-def _get_rootdir():
+def _load_conf():
     from joker.default import under_home_dir
-    global _rootdir
-    if _rootdir is None:
-        path = under_home_dir('.m14', 'relocate.txt')
+    paths = ['/etc/m14-default.yml', under_home_dir('.m14-default.yml')]
+    for path in paths:
         if os.path.isfile(path):
-            _rootdir = open(path).read().strip()
-        else:
-            _rootdir = under_home_dir('.m14')
-    return _rootdir
+            return yaml.load(open(path))
+    return {}
 
 
 def under_default_dir(package, *paths):
-    if isinstance(package, str):
-        name = package.split('.')[-1]
-    else:
-        name = package.__name__.split('.')[-1]
-    return os.path.join(_get_rootdir(), name, *paths)
+    conf = _load_conf()
+    name = getattr(package, '__name__', str(package)).split('.')[-1]
+    try:
+        dir_ = conf[name]
+    except LookupError:
+        dir_ = os.path.join(conf.get('default', '/data'), name)
+    return os.path.join(dir_, *paths)
