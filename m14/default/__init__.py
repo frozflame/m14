@@ -7,12 +7,12 @@ import os.path
 
 import yaml
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 
 def _load_conf():
     from joker.default import under_home_dir
-    paths = ['/etc/m14-default.yml', under_home_dir('.m14-default.yml')]
+    paths = [under_home_dir('.m14-default.yml'), '/etc/m14-default.yml']
     for path in paths:
         if os.path.isfile(path):
             return yaml.load(open(path))
