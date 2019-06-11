@@ -7,7 +7,7 @@ import os.path
 
 import yaml
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 
 def _load_conf():
@@ -27,3 +27,5 @@ def under_default_dir(package, *paths):
     except LookupError:
         dir_ = os.path.join(conf.get('default', '/data'), name)
     return os.path.join(dir_, *paths)
+
+
