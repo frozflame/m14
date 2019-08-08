@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals
-
 import os.path
 
 import yaml
 
 __version__ = '0.1'
+_conf = None
 
 
 def _load_conf():
@@ -16,11 +15,17 @@ def _load_conf():
     for path in paths:
         if os.path.isfile(path):
             return yaml.safe_load(open(path))
-    return {}
+
+
+def _get_conf():
+    global _conf
+    if _conf is None:
+        _conf = _load_conf() or {}
+    return _conf
 
 
 def under_default_dir(package, *paths):
-    conf = _load_conf()
+    conf = _get_conf()
     name = getattr(package, '__name__', str(package)).split('.')[-1]
     try:
         dir_ = conf[name]
