@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 namespace = 'm14'
 package_name = 'default'
-description = 'locate m14 default dir'
+description = 'locate default directories for m14 projects'
 
 
 def read(filename):
