@@ -5,7 +5,7 @@ import os.path
 
 import yaml
 
-__version__ = '0.1'
+__version__ = '0.2'
 _conf = None
 
 
@@ -17,10 +17,19 @@ def _load_conf():
             return yaml.safe_load(open(path))
 
 
+def _get_default_prefix():
+    import sys
+    if sys.platform.startswith('win'):
+        return r'c:\data'
+    return '/data'
+
+
 def _get_conf():
     global _conf
     if _conf is None:
         _conf = _load_conf() or {}
+    if 'default' not in _conf:
+        _conf['default'] = _get_default_prefix()
     return _conf
 
 
@@ -30,5 +39,5 @@ def under_default_dir(package, *paths):
     try:
         dir_ = conf[name]
     except LookupError:
-        dir_ = os.path.join(conf.get('default', '/data'), name)
+        dir_ = os.path.join(conf.get('default'), name)
     return os.path.join(dir_, *paths)
