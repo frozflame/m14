@@ -3,11 +3,11 @@
 
 import os.path
 import sys
-import volkanic.environ
 
+import volkanic.environ
 import yaml
 
-__version__ = '0.2'
+__version__ = '0.3'
 _conf = None
 
 

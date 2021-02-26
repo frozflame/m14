@@ -3,7 +3,7 @@
 import os
 import re
 
-from setuptools import setup, find_packages
+import setuptools
 
 # import joker; exit(1)
 # DO NOT import your package from your setup.py
@@ -49,7 +49,7 @@ config = {
     'author': 'frozflame',
     'author_email': 'frozflame@outlook.com',
     'license': "GNU General Public License (GPL)",
-    'packages': find_packages(),
+    'packages': setuptools.find_namespace_packages(include=['m14.*']),
     'namespace_packages': ["m14"],
     'zip_safe': False,
     'install_requires': read("requirements.txt"),
@@ -73,4 +73,4 @@ config = {
     'long_description_content_type': "text/markdown",
 }
 
-setup(**config)
+setuptools.setup(**config)
