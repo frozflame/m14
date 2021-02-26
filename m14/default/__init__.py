@@ -2,6 +2,8 @@
 # coding: utf-8
 
 import os.path
+import sys
+import volkanic.environ
 
 import yaml
 
@@ -18,7 +20,6 @@ def _load_conf():
 
 
 def _get_default_prefix():
-    import sys
     if sys.platform.startswith('win'):
         return r'c:\data'
     return '/data'
@@ -41,3 +42,28 @@ def under_default_dir(package, *paths):
     except LookupError:
         dir_ = os.path.join(conf.get('default'), name)
     return os.path.join(dir_, *paths)
+
+
+class GlobalInterface(volkanic.environ.GlobalInterface):
+    primary_name = 'm14_default'
+    package_name = 'm14.default'
+    default_data_dir = '/data/local/m14'
+
+    @classmethod
+    def get_data_dir(cls):
+        envvar_name = cls._fmt_envvar_name('data_dir')
+        try:
+            return os.environ[envvar_name]
+        except KeyError:
+            return cls.default_data_dir
+
+    @classmethod
+    def under_data_dir(cls, *paths):
+        return os.path.join(cls.get_data_dir(), *paths)
+
+    @classmethod
+    def _get_conf_search_paths(cls):
+        """
+        Make sure this method can be called without arguments.
+        """
+        return [cls.under_data_dir('config.json5')]
