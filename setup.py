@@ -4,13 +4,14 @@ import os
 import re
 
 import setuptools
+from setuptools import find_namespace_packages
 
 # import joker; exit(1)
 # DO NOT import your package from your setup.py
 
 
 namespace = 'm14'
-package_name = 'default'
+package_name = 'environ'
 description = 'locate default directories for m14 projects'
 
 
@@ -49,14 +50,12 @@ config = {
     'author': 'frozflame',
     'author_email': 'frozflame@outlook.com',
     'license': "GNU General Public License (GPL)",
-    'packages': setuptools.find_namespace_packages(include=['m14.*']),
+    'packages': find_namespace_packages(include=['m14.*']),
     'namespace_packages': ["m14"],
     'zip_safe': False,
     'install_requires': read("requirements.txt"),
     'classifiers': [
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
