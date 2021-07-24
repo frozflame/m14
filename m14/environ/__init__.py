@@ -17,7 +17,7 @@ class GlobalInterface(volkanic.GlobalInterface, GIMixinDirs):
             ddr = self.conf.get('m14_ddr', '/data/local')
             name = self.package_name.split('.')[-1]
             data_dir = os.path.join(ddr, name)
-            self.conf.setdefault('data_dir', path)
+            self.conf.setdefault('data_dir', data_dir)
         return super().under_data_dir(*paths, mkdirs=mkdirs)
 
 
