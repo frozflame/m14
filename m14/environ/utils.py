@@ -51,3 +51,11 @@ def relative_date(delta: int = 0, fmt='-') -> Union[str, datetime.date]:
 
 def fmt_today(fmt='-') -> Union[str, datetime.date]:
     return relative_date(0, fmt)
+
+
+def read_lines(path: str):
+    for line in open(path):
+        line = line.strip()
+        if not line:
+            continue
+        yield line
