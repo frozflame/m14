@@ -5,18 +5,16 @@ __version__ = '0.4.2'
 
 import os
 
-import volkanic
-from volkanic.environ import GIMixinDirs
+import joker.environ
 
 
-class GlobalInterface(volkanic.GlobalInterface, GIMixinDirs):
+class GlobalInterface(joker.environ.GlobalInterface):
     package_name = 'm14.environ'
 
     def under_data_dir(self, *paths, mkdirs=False):
         if 'data_dir' not in self.conf:
-            ddr = self.conf.get('m14_ddr', '/data/local')
-            name = self.package_name.split('.')[-1]
-            data_dir = os.path.join(ddr, name)
+            names = self.package_name.split('.')
+            data_dir = os.path.join('/data/local', *names)
             self.conf.setdefault('data_dir', data_dir)
         return super().under_data_dir(*paths, mkdirs=mkdirs)
 
