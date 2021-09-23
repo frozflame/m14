@@ -1,22 +1,8 @@
 #!/usr/bin/env python3
 # coding: utf-8
+__version__ = '0.5.0'
 
-__version__ = '0.4.2'
-
-import os
-
-import joker.environ
-
-
-class GlobalInterface(joker.environ.GlobalInterface):
-    package_name = 'm14.environ'
-
-    def under_data_dir(self, *paths, mkdirs=False):
-        if 'data_dir' not in self.conf:
-            names = self.package_name.split('.')
-            data_dir = os.path.join('/data/local', *names)
-            self.conf.setdefault('data_dir', data_dir)
-        return super().under_data_dir(*paths, mkdirs=mkdirs)
+from m14.environ.interface import GlobalInterface
 
 
 if __name__ == '__main__':

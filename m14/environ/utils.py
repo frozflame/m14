@@ -59,3 +59,17 @@ def read_lines(path: str):
         if not line:
             continue
         yield line
+
+
+def datetime_from_timestamp_1601(ts_1601: float, unit: int = 0):
+    """
+    Args:
+        ts_1601: time since 1 January 1601
+        unit: 0 = second, 6 = microsecond, 7 = 100 nanosecond
+    Returns:
+        a datetime.datetime instance
+    """
+    # https://stackoverflow.com/a/26118615/2925169
+    unit_per_sec = 10 ** unit
+    ts = ts_1601 / unit_per_sec - 11644473600
+    return datetime.datetime.fromtimestamp(ts)

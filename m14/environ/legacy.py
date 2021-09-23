@@ -4,8 +4,8 @@
 import os.path
 import sys
 
+# noinspection PyPackageRequirements
 import yaml
-from m14.environ import GlobalInterface
 from volkanic.utils import under_home_dir
 
 _conf = None
@@ -43,6 +43,3 @@ def under_default_dir(package, *paths):
     return os.path.join(dir_, *paths)
 
 
-_moved = [
-    GlobalInterface,
-]
