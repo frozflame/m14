@@ -1,21 +1,53 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import datetime
+import fnmatch
+import importlib
 import logging
-from typing import Union
+import re
+
+from volkanic.introspect import find_all_plain_modules
+from volkanic.utils import printerr
 
 
-def easylog(level):
-    root = logging.root
-    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    formatter = logging.Formatter(fmt)
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    root.setLevel(level)
-    root.addHandler(handler)
+def multicheck(func, target, rules, positive_val: bool) -> bool:
+    for rule in rules:
+        if func(target, rule):
+            return positive_val
+    return not positive_val
 
 
+def check_inclusive_prefixes(string: str, prefixes) -> bool:
+    return multicheck(str.startswith, string, prefixes, True)
+
+
+def check_exclusive_prefixes(string: str, prefixes) -> bool:
+    return multicheck(str.startswith, string, prefixes, False)
+
+
+def check_inclusive_patterns(string: str, patterns, case=True) -> bool:
+    func = fnmatch.fnmatchcase if case else fnmatch.fnmatch
+    return multicheck(func, string, patterns, True)
+
+
+def check_exclusive_patterns(string: str, patterns, case=True) -> bool:
+    func = fnmatch.fnmatchcase if case else fnmatch.fnmatch
+    return multicheck(func, string, patterns, False)
+
+
+def _regex_search(string: str, regex: str):
+    return re.search(regex, string)
+
+
+def check_inclusive_regexes(string: str, patterns) -> bool:
+    return multicheck(_regex_search, string, patterns, True)
+
+
+def check_exclusive_regexes(string: str, patterns) -> bool:
+    return multicheck(_regex_search, string, patterns, True)
+
+
+# deprecated. use check_{inclusive,exclusive}_* functions
 def check_prefixes(string: str, include=None, exclude=None) -> bool:
     """
     Args:
@@ -36,21 +68,23 @@ def check_prefixes(string: str, include=None, exclude=None) -> bool:
         return True
 
 
-def relative_date(delta: int = 0, fmt='-') -> Union[str, datetime.date]:
-    date = datetime.date.today()
-    if delta:
-        date += datetime.timedelta(days=delta)
-    if fmt is None:
-        return date
-    elif fmt == '':
-        return date.strftime('%Y%m%d')
-    elif fmt == '-':
-        return date.strftime('%Y-%m-%d')
-    return date.strftime(fmt)
+def load_all_modules(project_dir: str, *dotpath_prefixes):
+    if not project_dir or not dotpath_prefixes:
+        return
+    for dotpath in find_all_plain_modules(project_dir):
+        if check_inclusive_prefixes(dotpath, dotpath_prefixes):
+            printerr('importing', dotpath)
+            importlib.import_module(dotpath)
 
 
-def fmt_today(fmt='-') -> Union[str, datetime.date]:
-    return relative_date(0, fmt)
+def easylog(level):
+    root = logging.root
+    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    formatter = logging.Formatter(fmt)
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    root.setLevel(level)
+    root.addHandler(handler)
 
 
 def read_lines(path: str):
@@ -59,17 +93,3 @@ def read_lines(path: str):
         if not line:
             continue
         yield line
-
-
-def datetime_from_timestamp_1601(ts_1601: float, unit: int = 0):
-    """
-    Args:
-        ts_1601: time since 1 January 1601
-        unit: 0 = second, 6 = microsecond, 7 = 100 nanosecond
-    Returns:
-        a datetime.datetime instance
-    """
-    # https://stackoverflow.com/a/26118615/2925169
-    unit_per_sec = 10 ** unit
-    ts = ts_1601 / unit_per_sec - 11644473600
-    return datetime.datetime.fromtimestamp(ts)
