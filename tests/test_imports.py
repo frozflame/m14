@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from m14.environ import GlobalInterface
-from m14.environ.misc import load_all_modules
+from m14.environ.utils import load_all_modules
 
 gi = GlobalInterface()
 
