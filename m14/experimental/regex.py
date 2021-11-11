@@ -2,13 +2,12 @@
 # coding: utf-8
 
 import re
-from collections import deque
 
 
-class RegexGroup(object):
+class RegexTester(object):
     def __init__(self, regexes=None, strings=None):
-        self.regexes = deque(regexes or [])
-        self.strings = deque(strings or [])
+        self.regexes = regexes or []
+        self.strings = strings or []
 
     def check_all_regexes(self, string):
         return [r.search(string) for r in self.regexes]
@@ -17,3 +16,4 @@ class RegexGroup(object):
         return [re.search(pattern, s) for s in self.strings]
 
 
+RegexGroup = RegexTester
