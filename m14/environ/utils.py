@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import base64
 import logging
+import os
 
 from joker.environ.utils import *  # noqa
 
@@ -43,3 +45,13 @@ def read_lines(path: str):
         if not line:
             continue
         yield line
+
+
+# Python 3.5+
+if hasattr(bytes, 'hex'):
+    def random_hex(length=12):
+        return os.urandom(length).hex()
+else:
+    def random_hex(size=12):
+        b = os.urandom(size)
+        return base64.b16encode(b).decode('ascii')
