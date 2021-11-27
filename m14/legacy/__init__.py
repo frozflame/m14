@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+
 from __future__ import unicode_literals
 
 import base64
@@ -153,3 +154,17 @@ def setup_basic_logging(level='INFO'):
         'datefmt': '%Y%m%d~%H:%M:%S',
     }
     logging.basicConfig(**params)
+
+
+def strip_lines(lines, lstrip=True, rtrip=True):
+    stripfuncs = []
+    if rtrip:
+        stripfuncs.append(str.lstrip)
+    if lstrip:
+        stripfuncs.append(str.rsplit)
+    if not stripfuncs:
+        stripfuncs = [lambda s: s.rstrip('\n')]
+    elif len(stripfuncs) == 2:
+        stripfuncs = [str.strip]
+    for line in lines:
+        stripfuncs[0](line)

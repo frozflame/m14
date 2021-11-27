@@ -3,11 +3,13 @@
 
 import base64
 import json
-
 import os
 import shlex
+import sys
 from functools import lru_cache
 
+# TODO: drop this
+from joker.textmanip.path import make_new_path
 from volkanic.introspect import razor
 
 
@@ -47,3 +49,36 @@ else:
     def random_hex(size=12):
         b = os.urandom(size)
         return base64.b16encode(b).decode('ascii')
+
+
+def camel_case_split(name: str):
+    # https://stackoverflow.com/a/29920015/2925169
+    matches = re.finditer(
+        '.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', name
+    )
+    return [m.group(0) for m in matches]
+
+
+def camel_case_to_underscore(name: str):
+    return '_'.join(s.lower() for s in camel_case_split(name))
+
+
+def text_routine_catstyle(func, *paths):
+    # routine function for quick and dirty text manipulation scripts
+    if not paths:
+        paths = sys.argv[1:]
+
+    if not paths:
+        for line in sys.stdin:
+            print(func(line))
+        return
+    for path in paths:
+        for line in open(path):
+            print(func(line))
+
+
+def text_routine_perfile(func, ext='.out'):
+    # routine function for quick and dirty text manipulation scripts
+    for path in sys.argv[1:]:
+        outpath = make_new_path(path, ext)
+        func(path, outpath)
