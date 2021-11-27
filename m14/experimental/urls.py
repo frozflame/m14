@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import base64
+import binascii
 import urllib.parse
 from urllib.parse import ParseResult
 
@@ -22,3 +24,29 @@ def parse_url_to_dict(url, component_prefix='@') -> dict:
     # noinspection PyProtectedMember
     d.update({component_prefix + k: v for k, v in pr._asdict().items()})
     return d
+
+
+def _base32(bs):
+    return base64.b32encode(bs).decode().replace('=', '').lower()
+
+
+def _base64_encode(s):
+    return base64.urlsafe_b64encode(s.encode()).decode().replace('=', '')
+
+
+def _base64_decode(s):
+    padded = s[::-1] + '=' * (-len(s) % 4)
+    return base64.urlsafe_b64decode(padded).decode()
+
+
+def url_obfuscate(s):
+    ss = base64.urlsafe_b64encode(s.encode())
+    return ss.decode().replace('=', '')[::-1]
+
+
+def url_deobfuscate(s):
+    try:
+        padded = s[::-1] + '=' * (-len(s) % 4)
+        return base64.urlsafe_b64decode(padded).decode()
+    except (UnicodeDecodeError, binascii.Error):
+        pass
