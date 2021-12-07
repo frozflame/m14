@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import base64
 import json
-import os
+import re
 import shlex
 import sys
 from functools import lru_cache
 
+from joker.textmanip import random_hex
 # TODO: drop this
 from joker.textmanip.path import make_new_path
 from volkanic.introspect import razor
+
+_symbols = [random_hex]
 
 
 def dump_json_request_to_curl(method: str, url: str, data=None, aslist=False):
@@ -39,16 +41,6 @@ def copy_fields(record: dict, keys: list, keymap: dict, default=None):
     for old_key, new_key in keymap.items():
         new_record[new_key] = record.get(old_key, default)
     return new_record
-
-
-# Python 3.5+
-if hasattr(bytes, 'hex'):
-    def random_hex(size=12):
-        return os.urandom(size).hex()
-else:
-    def random_hex(size=12):
-        b = os.urandom(size)
-        return base64.b16encode(b).decode('ascii')
 
 
 def camel_case_split(name: str):
@@ -82,3 +74,17 @@ def text_routine_perfile(func, ext='.out'):
     for path in sys.argv[1:]:
         outpath = make_new_path(path, ext)
         func(path, outpath)
+
+
+def chained_bracket(record: dict, *keys):
+    current_rec = record
+    for k in keys:
+        try:
+            current_rec = current_rec[k]
+        except (KeyError, IndexError):
+            current_rec = {}
+    return current_rec
+
+
+def dotget(record: dict, key: str):
+    return chained_bracket(record, key.split('.'))
