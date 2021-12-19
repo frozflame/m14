@@ -88,3 +88,34 @@ def chained_bracket(record: dict, *keys):
 
 def dotget(record: dict, key: str):
     return chained_bracket(record, key.split('.'))
+
+
+def _get_instance_from_method_args(func, args: tuple):
+    if not args:
+        return
+    instance = args[0]
+    try:
+        raw_func = instance.__class__.__dict__.get(func.__name__).raw_func
+    except (AttributeError, TypeError):
+        return
+    if raw_func != func:
+        return
+    return instance
+
+
+def once_per_instance(func):
+    """Runs a method (successfully) only once per instance."""
+
+    @wraps(func)
+    def _resulting_method(*args, **kwargs):
+        self = _get_instance_from_method_args(func, args)
+        d = getattr(self, '__dict__', {})
+        if d.get(func.__qualname__):
+            msg = f'method {func.__qualname__} can only be called once'
+            raise RuntimeError(msg)
+        rv = func(*args, **kwargs)
+        d[func.__qualname__] = 1
+        return rv
+
+    _resulting_method.raw_func = func
+    return _resulting_method

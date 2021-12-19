@@ -73,6 +73,7 @@ alembic.ini
 
 # just as local reference
 zombies/*
+_local/
 
 # quick and dirty jobs
 run.sh
