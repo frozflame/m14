@@ -6,7 +6,7 @@ from __future__ import division, print_function
 import hashlib
 import os
 
-from m14.experimental.hasher import HashedPath, guess_hash_algorithm
+from m14.legacy.hasher import HashedPath, guess_hash_algorithm
 
 
 def test_hashed_path():

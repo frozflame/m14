@@ -12,7 +12,7 @@ from setuptools import find_namespace_packages
 
 namespace = 'm14'
 package_name = 'environ'
-description = 'locate default directories for m14 projects'
+description = 'experimental utilities for m14 projects'
 
 
 def read(filename):
