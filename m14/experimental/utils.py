@@ -2,11 +2,13 @@
 # coding: utf-8
 
 import json
+import os.path
 import re
 import shlex
 import sys
-from functools import lru_cache
+from functools import lru_cache, wraps
 
+import volkanic.utils
 from joker.textmanip import random_hex
 # TODO: drop this
 from joker.textmanip.path import make_new_path
@@ -31,9 +33,20 @@ def dump_json_request_to_curl(method: str, url: str, data=None, aslist=False):
     return ' '.join(parts)
 
 
-@lru_cache(100)
-def get_json_config(path):
-    return json.load(open(path))
+volkanic.utils.load_json5_file()
+
+
+@lru_cache(1024)
+def _load_json5_file_cached(path: str):
+    return volkanic.utils.load_json5_file(path)
+
+
+def load_json5_file_cached(path: str):
+    path = os.path.abspath(path)
+    return _load_json5_file_cached(path)
+
+
+get_json_config = load_json5_file_cached
 
 
 def copy_fields(record: dict, keys: list, keymap: dict, default=None):
@@ -119,3 +132,7 @@ def once_per_instance(func):
 
     _resulting_method.raw_func = func
     return _resulting_method
+
+
+def assert_equal(a, b):
+    assert a == b, (a, b)
