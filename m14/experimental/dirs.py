@@ -3,7 +3,6 @@
 
 import os
 from collections import deque
-from functools import cached_property
 
 
 def iter_path_bisections(path: str):

@@ -33,9 +33,6 @@ def dump_json_request_to_curl(method: str, url: str, data=None, aslist=False):
     return ' '.join(parts)
 
 
-volkanic.utils.load_json5_file()
-
-
 @lru_cache(1024)
 def _load_json5_file_cached(path: str):
     return volkanic.utils.load_json5_file(path)
