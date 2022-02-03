@@ -4,6 +4,5 @@ orjson~=3.6.3
 pymongo~=3.11.4
 pyyaml~=5.4.1
 redis~=3.5.3
-setuptools~=57.0.0
-six~=1.16.0
+setuptools>=57.0.0
 volkanic~=0.4.1

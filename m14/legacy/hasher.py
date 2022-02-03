@@ -7,8 +7,6 @@ import hashlib
 import re
 import zlib
 
-import six
-
 from joker.stream.utils import checksum
 
 
@@ -27,7 +25,7 @@ def guess_hash_algorithm(digest):
         ('hex', 96): 'sha384',
         ('hex', 128): 'sha512',
     }
-    if isinstance(digest, six.binary_type):
+    if isinstance(digest, bytes):
         try:
             digest = digest.decode('utf-8')
         except Exception:
@@ -141,9 +139,9 @@ class Hasher(object):
         raise NotImplementedError
 
     def update(self, data):
-        if isinstance(data, six.text_type):
+        if isinstance(data, str):
             return self._update_with_bytes(data.encode())
-        elif isinstance(data, six.binary_type):
+        elif isinstance(data, bytes):
             return self._update_with_bytes(data)
         self._update_with_traverser(data)
 
