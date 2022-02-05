@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from joker.environ.utils import load_modules_under_dir
+from joker.meta.utils import load_modules_under_dir
 
-from m14.environ import GlobalInterface
+from m14.meta.environ import GlobalInterface
 
 gi = GlobalInterface()
 

@@ -11,7 +11,7 @@ from setuptools import find_namespace_packages
 
 
 namespace = 'm14'
-package_name = 'environ'
+package_name = 'meta'
 description = 'experimental utilities for m14 projects'
 
 
