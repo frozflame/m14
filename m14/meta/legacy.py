@@ -42,4 +42,3 @@ def under_default_dir(package, *paths):
         dir_ = os.path.join(conf.get('default'), name)
     return os.path.join(dir_, *paths)
 
-

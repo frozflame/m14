@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import json
+import logging
 import os.path
 import re
 import shlex
@@ -9,12 +10,9 @@ import sys
 from functools import lru_cache, wraps
 
 import volkanic.utils
-from joker.textmanip import random_hex
 # TODO: drop this
 from joker.textmanip.path import make_new_path
 from volkanic.introspect import razor
-
-_symbols = [random_hex]
 
 
 def dump_json_request_to_curl(method: str, url: str, data=None, aslist=False):
@@ -174,6 +172,7 @@ def read_lines(path: str):
         yield line
 
 
+# deprecated: use joker.textmanip.random_hex
 # Python 3.5+
 if hasattr(bytes, 'hex'):
     def random_hex(length=12):

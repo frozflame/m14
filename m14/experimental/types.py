@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import dataclasses
 from volkanic.compat import cached_property
 
 
@@ -32,3 +33,13 @@ class NovelDict(dict):
         data = self.copy()
         data.update(self.get_properties())
         return data
+
+
+@dataclasses.dataclass
+class Record:
+    @classmethod
+    def from_dict(cls, dic: dict):
+        names = set([f.name for f in dataclasses.fields(cls)])
+        kwargs = {k: v for k, v in dic.items() if k in names}
+        # noinspection PyArgumentList
+        return cls(**kwargs)
