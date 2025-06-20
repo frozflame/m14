@@ -10,6 +10,7 @@ import sys
 from functools import lru_cache, wraps
 
 import volkanic.utils
+
 # TODO: drop this
 from joker.textmanip.path import make_new_path
 from volkanic.introspect import razor
@@ -17,18 +18,23 @@ from volkanic.introspect import razor
 
 def dump_json_request_to_curl(method: str, url: str, data=None, aslist=False):
     method = method.upper()
-    if method == 'GET':
-        parts = ['curl', url]
+    if method == "GET":
+        parts = ["curl", url]
     else:
         parts = [
-            'curl', '-X', method, url,
-            '-H', 'Content-Type: application/json',
-            '-d', json.dumps(razor(data), ensure_ascii=False),
+            "curl",
+            "-X",
+            method,
+            url,
+            "-H",
+            "Content-Type: application/json",
+            "-d",
+            json.dumps(razor(data), ensure_ascii=False),
         ]
     if aslist:
         return parts
     parts = [shlex.quote(s) for s in parts]
-    return ' '.join(parts)
+    return " ".join(parts)
 
 
 @lru_cache(1024)
@@ -54,13 +60,13 @@ def copy_fields(record: dict, keys: list, keymap: dict, default=None):
 def camel_case_split(name: str):
     # https://stackoverflow.com/a/29920015/2925169
     matches = re.finditer(
-        '.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', name
+        r".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)", name
     )
     return [m.group(0) for m in matches]
 
 
 def camel_case_to_underscore(name: str):
-    return '_'.join(s.lower() for s in camel_case_split(name))
+    return "_".join(s.lower() for s in camel_case_split(name))
 
 
 def text_routine_catstyle(func, *paths):
@@ -77,7 +83,7 @@ def text_routine_catstyle(func, *paths):
             print(func(line))
 
 
-def text_routine_perfile(func, ext='.out'):
+def text_routine_perfile(func, ext=".out"):
     # routine function for quick and dirty text manipulation scripts
     for path in sys.argv[1:]:
         outpath = make_new_path(path, ext)
@@ -95,7 +101,7 @@ def chained_bracket(record: dict, *keys):
 
 
 def dotget(record: dict, key: str):
-    return chained_bracket(record, key.split('.'))
+    return chained_bracket(record, key.split("."))
 
 
 def _get_instance_from_method_args(func, args: tuple):
@@ -117,9 +123,9 @@ def once_per_instance(func):
     @wraps(func)
     def _resulting_method(*args, **kwargs):
         self = _get_instance_from_method_args(func, args)
-        d = getattr(self, '__dict__', {})
+        d = getattr(self, "__dict__", {})
         if d.get(func.__qualname__):
-            msg = f'method {func.__qualname__} can only be called once'
+            msg = f"method {func.__qualname__} can only be called once"
             raise RuntimeError(msg)
         rv = func(*args, **kwargs)
         d[func.__qualname__] = 1
@@ -156,7 +162,7 @@ def check_prefixes(string: str, include=None, exclude=None) -> bool:
 
 def easylog(level):
     root = logging.root
-    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     formatter = logging.Formatter(fmt)
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
@@ -174,11 +180,15 @@ def read_lines(path: str):
 
 # deprecated: use joker.textmanip.random_hex
 # Python 3.5+
-if hasattr(bytes, 'hex'):
+if hasattr(bytes, "hex"):
+
     def random_hex(length=12):
         return os.urandom(length).hex()
+
 else:
+
     def random_hex(size=12):
         import base64
+
         b = os.urandom(size)
-        return base64.b16encode(b).decode('ascii')
+        return base64.b16encode(b).decode("ascii")

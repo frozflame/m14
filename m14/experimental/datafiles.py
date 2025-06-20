@@ -21,7 +21,7 @@ def _write_to_csv(rows, path: str = None):
         wr = csv.writer(sys.stdout)
         wr.writerows(rows)
         return
-    with open(path, 'a') as fout:
+    with open(path, "a") as fout:
         wr = csv.writer(fout)
         wr.writerows(rows)
 
@@ -38,7 +38,7 @@ def dicts_to_csv(dicts: list, keys: list, path: str = None):
 def json_to_csv(path: str, keys: list = None):
     data = load_json5_file(path)
     if not isinstance(data, list):
-        raise TypeError(f'a list is required, got {type(data)}')
+        raise TypeError(f"a list is required, got {type(data)}")
     if not data:
         return
 
@@ -46,7 +46,7 @@ def json_to_csv(path: str, keys: list = None):
 def jsonl_to_csv(path: str, keys: list = None):
     data = load_json5_file(path)
     if not isinstance(data, list):
-        raise TypeError(f'a list is required, got {type(data)}')
+        raise TypeError(f"a list is required, got {type(data)}")
     if not data:
         return
     keys = list(data[0].keys())
@@ -56,5 +56,5 @@ def jsonl_to_csv(path: str, keys: list = None):
     wr.writerows(rows)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     json_to_csv(sys.argv[1])

@@ -18,7 +18,7 @@ def parse_url(url) -> (ParseResult, dict):
     return pr, d
 
 
-def parse_url_to_dict(url, component_prefix='@') -> dict:
+def parse_url_to_dict(url, component_prefix="@") -> dict:
     pr = urllib.parse.urlparse(url)
     d = parse_qs_flat(pr.query)
     # noinspection PyProtectedMember
@@ -27,26 +27,26 @@ def parse_url_to_dict(url, component_prefix='@') -> dict:
 
 
 def _base32(bs):
-    return base64.b32encode(bs).decode().replace('=', '').lower()
+    return base64.b32encode(bs).decode().replace("=", "").lower()
 
 
 def _base64_encode(s):
-    return base64.urlsafe_b64encode(s.encode()).decode().replace('=', '')
+    return base64.urlsafe_b64encode(s.encode()).decode().replace("=", "")
 
 
 def _base64_decode(s):
-    padded = s[::-1] + '=' * (-len(s) % 4)
+    padded = s[::-1] + "=" * (-len(s) % 4)
     return base64.urlsafe_b64decode(padded).decode()
 
 
 def url_obfuscate(s):
     ss = base64.urlsafe_b64encode(s.encode())
-    return ss.decode().replace('=', '')[::-1]
+    return ss.decode().replace("=", "")[::-1]
 
 
 def url_deobfuscate(s):
     try:
-        padded = s[::-1] + '=' * (-len(s) % 4)
+        padded = s[::-1] + "=" * (-len(s) % 4)
         return base64.urlsafe_b64decode(padded).decode()
     except (UnicodeDecodeError, binascii.Error):
         pass

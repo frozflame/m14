@@ -15,10 +15,10 @@ class CommandNotFound(KeyError):
 
 
 # deprecated
-class CommandConf(object):
+class CommandConf:
     def __init__(self, commands):
         self.commands = dict(commands)
-        self.commands.setdefault('_global', {})
+        self.commands.setdefault("_global", {})
 
     @classmethod
     def _from_file(cls, name, loader, default_dir=None):
@@ -28,9 +28,10 @@ class CommandConf(object):
     @classmethod
     def from_yaml(cls, name, default_dir=None):
         import yaml
+
         ext = os.path.splitext(name)[1].lower()
-        if ext not in ['.yml', '.yaml']:
-            name += '.yml'
+        if ext not in [".yml", ".yaml"]:
+            name += ".yml"
         return cls._from_file(name, yaml.safe_load, default_dir)
 
     @classmethod
@@ -54,34 +55,37 @@ class CommandConf(object):
     @staticmethod
     def _execute(params):
         # only 'module' is a must-have
-        prefix = params.get('prefix', '')
-        module = prefix + params['module']
-        call = params.get('call', 'run')
-        args = params.get('args', [])
-        kwargs = params.get('kwargs', {})
+        prefix = params.get("prefix", "")
+        module = prefix + params["module"]
+        call = params.get("call", "run")
+        args = params.get("args", [])
+        kwargs = params.get("kwargs", {})
         if not isinstance(args, (list, tuple)):
             args = [args]
         m = importlib.import_module(module)
-        query_attr(m, *call.split('.'))(*args, **kwargs)
+        query_attr(m, *call.split("."))(*args, **kwargs)
 
     def __call__(self, cmd):
         if cmd not in self.commands:
             raise CommandNotFound(str(cmd))
-        params = dict(self.commands['_global'])
+        params = dict(self.commands["_global"])
         params.update(self.commands[cmd])
         with remember_cwd():
-            os.chdir(params.get('cd', '.'))
+            os.chdir(params.get("cd", "."))
             self._execute(params)
 
     @classmethod
     def run(cls, prog=None, args=None, default_dir=None, **kwargs):
         from argparse import ArgumentParser
-        kwargs.setdefault('description', 'volkanic command-conf runner')
+
+        kwargs.setdefault("description", "volkanic command-conf runner")
         parser = ArgumentParser(prog=prog, **kwargs)
-        parser.add_argument('name', help='a YAML file')
+        parser.add_argument("name", help="a YAML file")
         parser.add_argument(
-            'key', nargs='?', default='default',
-            help='a top-level key in the YAML file',
+            "key",
+            nargs="?",
+            default="default",
+            help="a top-level key in the YAML file",
         )
         ns = parser.parse_args(args=args)
         cconf = cls.from_yaml(ns.name, default_dir)

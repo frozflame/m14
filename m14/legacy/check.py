@@ -25,6 +25,7 @@ class CheckZone(object):
                 entry = func, args, kwargs
                 self._entries.append(entry)
             return func
+
         return _decorator
 
     def conduct_checks(self, clear=True):
@@ -33,7 +34,7 @@ class CheckZone(object):
             if self._checker(retval):
                 continue
             p = format_function_path(func)
-            m = 'introspect failed at {}'.format(p)
+            m = "introspect failed at {}".format(p)
             raise RuntimeError(m)
         if clear:
             self._entries = []
@@ -52,5 +53,3 @@ def register_with_params(*args, **kwargs):
 
 def conduct_checks(clear=True):
     return default_zone.conduct_checks(clear=clear)
-
-

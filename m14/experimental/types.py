@@ -2,11 +2,12 @@
 # coding: utf-8
 
 import dataclasses
+
 from volkanic.compat import cached_property
 
 
 def prefetch_cached_properties(obj):
-    d = getattr(obj, '__dict__', {})
+    d = getattr(obj, "__dict__", {})
     for key, val in d.items():
         if isinstance(val, cached_property):
             getattr(obj, key)

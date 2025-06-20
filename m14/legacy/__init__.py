@@ -8,19 +8,19 @@ import base64
 import codecs
 import functools
 import itertools
-import os
 import json
+import os
 
 
 # replaced by volkanic.utils.indented_json_print
 def indented_json_print_legacy(obj, **kwargs):
     # https://stackoverflow.com/a/12888081/2925169
-    decoder = codecs.getdecoder('unicode_escape')
+    decoder = codecs.getdecoder("unicode_escape")
     print_kwargs = {}
-    for k in ['sep', 'end', 'file', 'flush']:
+    for k in ["sep", "end", "file", "flush"]:
         if k in kwargs:
             print_kwargs[k] = kwargs.pop(k)
-    kwargs.setdefault('indent', 4)
+    kwargs.setdefault("indent", 4)
     s = json.dumps(obj, **kwargs)
     print(decoder(s)[0], **print_kwargs)
 
@@ -71,9 +71,9 @@ def castable(func):
     @functools.wraps(func)
     def _decorated_func(*args, **kwargs):
         castfunc = None
-        if 'castfunc' in kwargs:
-            castfunc = kwargs['castfunc']
-            del kwargs['castfunc']
+        if "castfunc" in kwargs:
+            castfunc = kwargs["castfunc"]
+            del kwargs["castfunc"]
 
         retval = func(*args, **kwargs)
         if castfunc:
@@ -82,7 +82,7 @@ def castable(func):
             # shortcut to pick up nth record
             if isinstance(castfunc, int):
                 return next(itertools.islice(retval, castfunc, None))
-            return TypeError('castfunc must be a callable or integer')
+            return TypeError("castfunc must be a callable or integer")
         return retval
 
     return _decorated_func
@@ -106,39 +106,40 @@ class AttrEchoer(object):
 
         assert Event.unauthoried  == 'event.bad_params'
     """
-    _prefix = '_root.'
+
+    _prefix = "_root."
 
     def __init__(self):
         pass
 
     def __getattribute__(self, key):
         kls = type(self)
-        if key in kls.__dict__ and key != '_prefix':
+        if key in kls.__dict__ and key != "_prefix":
             if not kls._prefix:
                 return key
-            return '{}{}'.format(kls._prefix, key)
+            return "{}{}".format(kls._prefix, key)
         return object.__getattribute__(self, key)
 
 
 def locate_standard_conf(package):
     # a string is also acceptable
-    name = getattr(package, '__name__', package)
-    workdirs = [os.environ.get('{}_WORKDIR'.format(name.upper()))]
+    name = getattr(package, "__name__", package)
+    workdirs = [os.environ.get("{}_WORKDIR".format(name.upper()))]
 
     # look for ~/.<package> and /data/<package>
     # ONLY IF <package>_WORKDIR is not set
     if workdirs[0] is None:
         workdirs = [
-            os.path.expanduser('~/.{}'.format(name)),
-            '/data/{}/'.format(name),
+            os.path.expanduser("~/.{}".format(name)),
+            "/data/{}/".format(name),
         ]
         workdirs = [d for d in workdirs if os.path.isdir(d)]
 
     for d in workdirs:
-        p = os.path.join(d, 'configs/{}.yml'.format(name))
+        p = os.path.join(d, "configs/{}.yml".format(name))
         if p and os.path.isfile(p):
             return p
-    raise ValueError('config file not found')
+    raise ValueError("config file not found")
 
 
 def gen_random_string(length):
@@ -146,12 +147,13 @@ def gen_random_string(length):
     return base64.b32encode(os.urandom(n)).decode()[:length]
 
 
-def setup_basic_logging(level='INFO'):
+def setup_basic_logging(level="INFO"):
     import logging
+
     params = {
-        'level': level,
-        'format': '%(asctime)s %(levelname)s %(name)s %(message)s',
-        'datefmt': '%Y%m%d~%H:%M:%S',
+        "level": level,
+        "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+        "datefmt": "%Y%m%d~%H:%M:%S",
     }
     logging.basicConfig(**params)
 
@@ -163,7 +165,7 @@ def strip_lines(lines, lstrip=True, rtrip=True):
     if lstrip:
         stripfuncs.append(str.rsplit)
     if not stripfuncs:
-        stripfuncs = [lambda s: s.rstrip('\n')]
+        stripfuncs = [lambda s: s.rstrip("\n")]
     elif len(stripfuncs) == 2:
         stripfuncs = [str.strip]
     for line in lines:

@@ -23,7 +23,7 @@ class ContextFile(object):
             return
         data = yaml.safe_load(open(self.path))
         if not isinstance(data, dict):
-            raise TypeError('the contextmap file is not dict-like')
+            raise TypeError("the contextmap file is not dict-like")
         data.update(self._defaults)
         self._data = data
         self._mtime = mtime
@@ -66,7 +66,7 @@ class RealContextFile(ContextFile):
 class ContextDirectory(object):
     def __init__(self, dir_path):
         if not os.path.isdir(dir_path):
-            raise ValueError('requires a directory')
+            raise ValueError("requires a directory")
         self._cache = {}
         self._mtime = {}
         self.path = dir_path
@@ -75,7 +75,7 @@ class ContextDirectory(object):
         """
         Update _mtime and _cache if yaml.safe_load() is called.
         """
-        path = join(self.path, key + '.yml')
+        path = join(self.path, key + ".yml")
         if not os.path.isfile(path):
             return
         mtime = os.path.getmtime(path)
@@ -105,7 +105,7 @@ class ContextDirectory(object):
         _keys = []
         for filename in os.listdir(self.path):
             name, ext = os.path.splitext(filename)
-            if ext == '.yml':
+            if ext == ".yml":
                 _keys.append(name)
         return _keys
 
@@ -134,7 +134,7 @@ class RealContextDirectory(ContextDirectory):
 
     def setdefault(self, key, default=None):
         section = self._cache.setdefault(key, self.get(key, default))
-        self._xtime.setdefault(key, float('inf'))
+        self._xtime.setdefault(key, float("inf"))
         return section
 
 
@@ -150,4 +150,4 @@ def context_load(path, ttl=None):
         else:
             return RealContextFile(path, ttl)
     else:
-        raise ValueError('path must be a file or directory')
+        raise ValueError("path must be a file or directory")

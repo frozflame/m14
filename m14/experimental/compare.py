@@ -16,7 +16,7 @@ class Comparison:
     def from_collections(cls, c1: Collection, c2: Collection, field: str):
         args = (
             [r[field] for r in c1.find(projection=[field])],
-            [r[field] for r in c2.find(projection=[field])]
+            [r[field] for r in c2.find(projection=[field])],
         )
         return cls(*args)
 
@@ -78,5 +78,5 @@ class Comparison:
         return [t / u for t, u in zip(self.counts, self.uniq_counts)]
 
     def get_stats(self):
-        attrnames = ['counts', 'uniq_counts', 'duplication_ratio']
+        attrnames = ["counts", "uniq_counts", "duplication_ratio"]
         return {k: getattr(self, k) for k in attrnames}
